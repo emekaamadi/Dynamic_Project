@@ -21,7 +21,7 @@ class DynamicPricing:
         return self.a * price ** (-np.abs(eta)) + self.b
     
     def thompson_sampling(self):
-        # 현실적인 범위 내에서 eta 값을 샘플링
+    # 현실적인 범위 내에서 eta 값을 샘플링
         sampled_eta = np.random.normal(self.eta_mean, self.eta_std)
         sampled_eta = np.clip(sampled_eta, -1, 1)  # 예시: 샘플링된 eta 값을 -1과 1 사이로 제한
         self.sampled_etas.append(sampled_eta)
