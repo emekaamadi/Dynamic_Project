@@ -6,7 +6,7 @@ from dynamic_pricing import DynamicPricing
 st.title('Dynamic Pricing Simulation for Cab Rides')
 
 # 데이터 로드
-df = pd.read_csv('cab_rides.csv')
+df = pd.read_csv('../cab_rides.csv')
 
 # 사용자 입력 처리
 st.header("1. Choose your options!")
