@@ -36,18 +36,18 @@ def train_and_save_model(X, y, preprocessor, model_name):
     # Save the model
     dump(pipeline, f'Models/{model_name}_pipeline.joblib')
 
-if __name__ == "__main__":
-    # Process and save model for base data
-    base_data = get_base_data()
-    X, y, preprocessor = prepare_data(base_data)
-    train_and_save_model(X, y, preprocessor, 'base_model')
-    print("Saved Base Model")
+# if __name__ == "__main__":
+#     # Process and save model for base data
+#     base_data = get_base_data()
+#     X, y, preprocessor = prepare_data(base_data)
+#     train_and_save_model(X, y, preprocessor, 'base_model')
+#     print("Saved Base Model")
 
-    # Process and save model for dynamic data
-    dynamic_data = get_dynamic_data()
-    X, y, preprocessor = prepare_data(dynamic_data)
-    train_and_save_model(X, y, preprocessor, 'dynamic_model')
-    print("Saved Dynamic Model")
+#     # Process and save model for dynamic data
+#     dynamic_data = get_dynamic_data()
+#     X, y, preprocessor = prepare_data(dynamic_data)
+#     train_and_save_model(X, y, preprocessor, 'dynamic_model')
+#     print("Saved Dynamic Model")
 
     # Process and save model for demand data 
     # either import saved file or create funtion to get data 

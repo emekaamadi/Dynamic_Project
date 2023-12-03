@@ -136,15 +136,12 @@ def get_dynamic_data():
 #     demand_df = demand_estimation(df)
 #     return demand_df[[set of columns to keep]]
 
-# Main script execution
-if __name__ == "__main__":
-    data_df = load_and_preprocess_cab_data("../cab_rides.csv")
-    weather_df = load_and_preprocess_weather_data("../weather.csv")
+# # Main script execution
+# if __name__ == "__main__":
+#     data_df = load_and_preprocess_cab_data("../cab_rides.csv")
+#     weather_df = load_and_preprocess_weather_data("../weather.csv")
 
-    if data_df is not None and weather_df is not None:
-        merged_df = merge_and_clean_data(data_df, weather_df)
-        # Save the cleaned data
-        merged_df.to_csv("Data/base_cleaned.csv")
-    
-
-
+#     if data_df is not None and weather_df is not None:
+#         merged_df = merge_and_clean_data(data_df, weather_df)
+#         # Save the cleaned data
+#         merged_df.to_csv("Data/base_cleaned.csv")
