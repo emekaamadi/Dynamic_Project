@@ -1,11 +1,12 @@
 from joblib import load
+import pandas as pd
 
-# Load the pipeline
-base_loaded_pipeline = load('base_model_pipeline.joblib')
-dynamic_loaded_pipeline = load('dynamic_model_pipeline.joblib')
-# Get the data inputed by user 
-# Predict with new data
-# new_data should be a DataFrame with the same features as the training data
-new_data = ...  # your code to retrieve new data
-base_predictions = base_loaded_pipeline.predict(new_data)
-dynamic_predictions = base_loaded_pipeline.predict(new_data)
+def load_models():
+    base_model = load('Models/base_model_pipeline.joblib')
+    dynamic_model = load('Models/dynamic_model_pipeline.joblib')
+    return base_model, dynamic_model
+
+def predict_prices(new_data, base_model, dynamic_model):
+    base_predictions = base_model.predict(new_data)
+    dynamic_predictions = dynamic_model.predict(new_data)
+    return base_predictions, dynamic_predictions

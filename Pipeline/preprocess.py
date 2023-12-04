@@ -105,24 +105,24 @@ def get_cleaned_data():
         raise ValueError("Error in loading data.")
     
 # Function to get base modeling data
-def get_base_data():
+def get_base_data(data=get_cleaned_data()):
     """
     Extract base data where surge_multiplier is 1.0.
     Returns:
         DataFrame: Filtered base data.
     """
-    df = get_cleaned_data()
+    df = data
     base_df = df[df["surge_multiplier"] == 1.0]
     return base_df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "surge_multiplier", "price"]]
 
 # Function to get dynamic modeling data 
-def get_dynamic_data():
+def get_dynamic_data(data=get_cleaned_data()):
     """
     Extract dynamic data.
     Returns:
         DataFrame: Filtered dynamic data.
     """
-    df = get_cleaned_data()
+    df = data
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "surge_multiplier", "price"]]
 
 # NOT YET FUNCTIONAL
