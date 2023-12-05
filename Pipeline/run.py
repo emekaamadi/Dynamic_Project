@@ -7,3 +7,10 @@
 #  then the app.py stuff 
 #  figure out how to make the streamlit app run directly in this file.
 # Then we can make calls to visulizations in here as well
+
+# run.py (continuation)
+
+import subprocess
+
+# Running the Streamlit app
+subprocess.run(["streamlit", "run", "app.py"])
