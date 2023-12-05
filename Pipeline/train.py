@@ -1,4 +1,4 @@
-from preprocess import get_base_data, get_dynamic_data
+from preprocess import get_base_data, get_dynamic_data, get_demand_data
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
@@ -51,7 +51,8 @@ if __name__ == "__main__":
     print("Saved Dynamic Model")
 
     # Process and save model for demand data 
-    # either import saved file or create funtion to get data 
-    #X, y, preprocessor = prepare_data(demand_data)
-    #train_and_save_model(X, y, preprocessor, 'demand_model')
-    #print("Saved Demand Model")
+    demand_data = get_demand_data()
+    X, y, preprocessor = prepare_data(demand_data)
+    train_and_save_model(X, y, preprocessor, 'demand_model')
+    print("Saved Demand Model")
+    

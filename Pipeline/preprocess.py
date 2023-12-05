@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 # Function to load and preprocess cab ride data
 def load_and_preprocess_cab_data(filepath):
@@ -113,7 +114,7 @@ def get_base_data(data=get_cleaned_data()):
     """
     df = data
     base_df = df[df["surge_multiplier"] == 1.0]
-    return base_df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "surge_multiplier", "price"]]
+    return base_df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
 # Function to get dynamic modeling data 
 def get_dynamic_data(data=get_cleaned_data()):
@@ -123,18 +124,22 @@ def get_dynamic_data(data=get_cleaned_data()):
         DataFrame: Filtered dynamic data.
     """
     df = data
-    return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "surge_multiplier", "price"]]
-
-# NOT YET FUNCTIONAL
-# def get_demand_data():
-#     """
-#     Create dataset based off demand estimation calculation.
-#     Returns:
-#         DataFrame: Filtered Demand data.
-#     """
-#     df = get_cleaned_data()
-#     demand_df = demand_estimation(df)
-#     return demand_df[[set of columns to keep]]
+    return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
+ 
+def get_demand_data():
+    """
+    Create dataset based off demand estimation calculation.
+    Returns:
+        DataFrame: Filtered Demand data.
+    """
+    # Load in already saved data because it takes hours to do the demand estimation
+    df = pd.read_csv("Data/demand_est.csv")
+    df['estimated_demand'] = df['estimated_a'] * np.exp(-np.abs(df['estimated_eta']) * np.log(df['price'])) + df['estimated_b']
+    df['base_price'] = df.groupby(by=['source', 'destination', 'car_type'])['price'].transform('min')
+    df.rename(columns = {'price': 'original_price'}, inplace= True)
+    # Now the new price column will actually be the dynamic price
+    df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
+    return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
 # # Main script execution
 # if __name__ == "__main__":
