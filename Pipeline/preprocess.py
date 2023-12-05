@@ -126,14 +126,14 @@ def get_dynamic_data(data=get_cleaned_data()):
     df = data
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
  
-def get_demand_data():
+def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     """
     Create dataset based off demand estimation calculation.
     Returns:
         DataFrame: Filtered Demand data.
     """
     # Load in already saved data because it takes hours to do the demand estimation
-    df = pd.read_csv("Data/demand_est.csv")
+    df = data
     df['estimated_demand'] = df['estimated_a'] * np.exp(-np.abs(df['estimated_eta']) * np.log(df['price'])) + df['estimated_b']
     df['base_price'] = df.groupby(by=['source', 'destination', 'car_type'])['price'].transform('min')
     df.rename(columns = {'price': 'original_price'}, inplace= True)
@@ -141,12 +141,57 @@ def get_demand_data():
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
-# # Main script execution
-# if __name__ == "__main__":
-#     data_df = load_and_preprocess_cab_data("../cab_rides.csv")
-#     weather_df = load_and_preprocess_weather_data("../weather.csv")
+# def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):
+#     return whole_data[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta", "estimated_a", "estimated_b"]]
 
-#     if data_df is not None and weather_df is not None:
-#         merged_df = merge_and_clean_data(data_df, weather_df)
-#         # Save the cleaned data
-#         merged_df.to_csv("Data/base_cleaned.csv")
+# def get_estimated_values(MCMC_data=get_MCMC_data(), input_df=get_dynamic_data()):
+#     filters = pd.Series([True] * len(MCMC_data))  
+#     for col in input_df.columns:
+#         filters &= (MCMC_data[col] == input_df.at[0, col]) 
+#     filtered = MCMC_data[filters]
+#     if filtered.empty:
+#         return 0.3, 100, 10
+#     else:
+#         return filtered.at[0, 'estimated_eta'], filtered.at[0, 'estimated_a'], filtered.at[0, 'estimated_b']
+
+def col_item_dict(data=get_dynamic_data()):
+    df = data
+    unique_dict = {col: df[col].unique().tolist() for col in df.columns}
+    return unique_dict
+
+def get_service_types():
+    car_type_options = {
+        'Uber': ['Luxury', 'Base XL', 'Base', 'Wheel Chair Accessible', 'Luxury SUV', 'Shared'],
+        'Lyft': ['Luxury SUV', 'Base', 'Shared', 'Luxury', 'Base XL']
+    }
+    return car_type_options
+
+def get_questions_answers():
+    unique_values = col_item_dict()  
+    questions = ['Uber or Lyft?', 'Where are customers coming from?', 'Where are customers going?', 'What type of service?', 'Weekday or Weekend?', 'Is it rush hour?', 'Is it raining?', 'What is the temperature group?']
+    answers = [unique_values['cab_type'], unique_values['source'], unique_values['destination'], unique_values['car_type'], ['Weekday', 'Weekend'], ['Yes', 'No'], ['Yes', 'No'], ['20-30 degrees', '30-40 degrees', '40-50 degrees', '50 or more']]
+    return questions, answers
+
+def option_translator(option_list):
+    temp_dict = {'20-30 degrees': 20, '30-40 degrees': 30, '40-50 degrees': 40, '50 or more': 50}
+    week_dict = {'Weekday': 1, 'Weekend': 0}
+    yn_dict = {'Yes': 1, 'No': 0}
+    cols = ['cab_type', 'source', 'destination', 'car_type', 'weekday', 'rush_hour', 'is_raining', 'temp_groups']
+    df = pd.DataFrame(columns=cols)
+    df.loc[0] = option_list
+    df['temp_groups'] = df['temp_groups'].map(temp_dict)
+    df['weekday'] = df['weekday'].map(week_dict)
+    df['rush_hour'] = df['rush_hour'].map(yn_dict)
+    df['is_raining'] = df['is_raining'].map(yn_dict)
+
+    return df
+
+# Main script execution
+if __name__ == "__main__":
+    data_df = load_and_preprocess_cab_data("../cab_rides.csv")
+    weather_df = load_and_preprocess_weather_data("../weather.csv")
+
+    if data_df is not None and weather_df is not None:
+        merged_df = merge_and_clean_data(data_df, weather_df)
+        # Save the cleaned data
+        merged_df.to_csv("Data/base_cleaned.csv")
