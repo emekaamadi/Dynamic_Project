@@ -1,11 +1,7 @@
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 import pymc3 as pm
 import theano.tensor as tt
-from preprocess import get_cleaned_data
-
+import pandas as pd
+import numpy as np
 
 def estimate_demand_parameters(dataframe, price_col):
     """

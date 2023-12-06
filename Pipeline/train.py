@@ -1,11 +1,11 @@
-from preprocess import get_base_data, get_dynamic_data, get_demand_data
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeRegressor
+
 from joblib import dump
-import pandas as pd
+from joblib import load
 
 def prepare_data(data):
     X = data.drop('price', axis=1)
@@ -37,22 +37,3 @@ def train_and_save_model(X, y, preprocessor, model_name):
     # Save the model
     dump(pipeline, f'Models/{model_name}_pipeline.joblib')
 
-if __name__ == "__main__":
-    # Process and save model for base data
-    base_data = get_base_data()
-    X, y, preprocessor = prepare_data(base_data)
-    train_and_save_model(X, y, preprocessor, 'base_model')
-    print("Saved Base Model")
-
-    # Process and save model for dynamic data
-    dynamic_data = get_dynamic_data()
-    X, y, preprocessor = prepare_data(dynamic_data)
-    train_and_save_model(X, y, preprocessor, 'dynamic_model')
-    print("Saved Dynamic Model")
-
-    # Process and save model for demand data 
-    demand_data = get_demand_data()
-    X, y, preprocessor = prepare_data(demand_data)
-    train_and_save_model(X, y, preprocessor, 'demand_model')
-    print("Saved Demand Model")
-    

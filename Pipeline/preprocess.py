@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-# Function to load and preprocess cab ride data
 def load_and_preprocess_cab_data(filepath):
     """
     Load cab ride data from a CSV file and preprocess it.
@@ -186,12 +185,3 @@ def option_translator(option_list):
 
     return df
 
-# Main script execution
-if __name__ == "__main__":
-    data_df = load_and_preprocess_cab_data("../cab_rides.csv")
-    weather_df = load_and_preprocess_weather_data("../weather.csv")
-
-    if data_df is not None and weather_df is not None:
-        merged_df = merge_and_clean_data(data_df, weather_df)
-        # Save the cleaned data
-        merged_df.to_csv("Data/base_cleaned.csv")

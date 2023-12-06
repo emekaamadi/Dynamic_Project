@@ -4,10 +4,10 @@ from preprocess import get_service_types, get_questions_answers, option_translat
 from predict import load_models, predict_prices
 
 ########## Set Title ##########
-st.title("Simulation for Cab Ride Price Optimization")
+st.title("Simulation for Ride Share Price Optimization")
 
 ########## Explain the problem ##########
-st.header("0. Problem Explanation")
+st.header("Problem Explanation")
 st.markdown("""
     <style>
     .big-font {
@@ -36,7 +36,7 @@ st.markdown("""
 
 
 ########## Select Filters ##########
-st.header("1. Select Options")
+st.header("Select Options")
 questions, answers = get_questions_answers()
 car_type_options = get_service_types()
 
