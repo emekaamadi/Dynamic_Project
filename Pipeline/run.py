@@ -29,11 +29,13 @@ print("Completed Initialization!")
 data_df = load_and_preprocess_cab_data("../cab_rides.csv")
 weather_df = load_and_preprocess_weather_data("../weather.csv")
 print("Loading and Cleaning the Data!")
+
 if data_df is not None and weather_df is not None:
     merged_df = merge_and_clean_data(data_df, weather_df)
     # Save the cleaned data
     merged_df.to_csv("Data/base_cleaned.csv")
 print("Started Training Base Model!")
+
 # Process and save model for base data
 base_data = get_base_data(merged_df)
 X, y, preprocessor = prepare_data(base_data)
@@ -47,7 +49,6 @@ train_and_save_model(X, y, preprocessor, 'dynamic_model')
 print("Saved Dynamic Model")
 
 # Creation of Demand Data via Demand Estimation takes a few hours to run only uncomment the following lines to get new demand estimation that is currently stored in Data Folder.
-
 #sub_eta_df = estimate_demand_parameters(merged_df, 'price')
 #eta_df = save_demand_data(sub_eta_df)   
 
@@ -57,6 +58,11 @@ X, y, preprocessor = prepare_data(demand_data)
 train_and_save_model(X, y, preprocessor, 'demand_model')
 print("Saved Demand Model")  
 
+##### For test by YC #####
+demand_data_eta = get_demand_data_with_eta()
+X, y, preprocessor = prepare_data_eta(demand_data_eta)
+train_and_save_model_for_eta(X, y, preprocessor, 'demand_model_eta')
+print("Saved Demand Model with eta")
 
 # Running the Streamlit app
 subprocess.run(["streamlit", "run", "app.py"])

@@ -140,6 +140,23 @@ def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
+##### For test by YC #####
+def get_demand_data_with_eta(data=pd.read_csv("Data/demand_est.csv")):
+    """
+    Create dataset based off demand estimation calculation.
+    Returns:
+        DataFrame: Filtered Demand data.
+    """
+    # Load in already saved data because it takes hours to do the demand estimation
+    df = data
+    df['estimated_demand'] = df['estimated_a'] * np.exp(-np.abs(df['estimated_eta']) * np.log(df['price'])) + df['estimated_b']
+    df['base_price'] = df.groupby(by=['source', 'destination', 'car_type'])['price'].transform('min')
+    df.rename(columns = {'price': 'original_price'}, inplace= True)
+    # Now the new price column will actually be the dynamic price
+    df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
+    return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta"]]
+
+
 def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):
     return whole_data[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta", "estimated_a", "estimated_b"]]
 
