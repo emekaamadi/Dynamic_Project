@@ -140,18 +140,18 @@ def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
-# def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):
-#     return whole_data[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta", "estimated_a", "estimated_b"]]
+def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):
+    return whole_data[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta", "estimated_a", "estimated_b"]]
 
-# def get_estimated_values(MCMC_data=get_MCMC_data(), input_df=get_dynamic_data()):
-#     filters = pd.Series([True] * len(MCMC_data))  
-#     for col in input_df.columns:
-#         filters &= (MCMC_data[col] == input_df.at[0, col]) 
-#     filtered = MCMC_data[filters]
-#     if filtered.empty:
-#         return 0.3, 100, 10
-#     else:
-#         return filtered.at[0, 'estimated_eta'], filtered.at[0, 'estimated_a'], filtered.at[0, 'estimated_b']
+def get_estimated_values(MCMC_data=get_MCMC_data(), input_df=get_dynamic_data()):
+    filters = pd.Series([True] * len(MCMC_data))  
+    for col in input_df.columns:
+        filters &= (MCMC_data[col] == input_df.at[0, col]) 
+    filtered = MCMC_data[filters]
+    if filtered.empty:
+        return "There's no data matched", 0, 0
+    else:
+        return filtered.iloc[0]['estimated_eta'], filtered.iloc[0]['estimated_a'], filtered.iloc[0]['estimated_b']
 
 def col_item_dict(data=get_dynamic_data()):
     df = data

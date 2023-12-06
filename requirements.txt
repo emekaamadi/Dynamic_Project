@@ -2,3 +2,6 @@ streamlit==1.29.0
 pandas==2.0.3
 sklearn==1.1.2
 joblib==1.1.1
+pymc3==3.11.5
+numpy==1.22.1
+theano==1.1.2

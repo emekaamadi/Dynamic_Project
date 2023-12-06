@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from preprocess import get_service_types, get_questions_answers, option_translator
+from preprocess import get_service_types, get_questions_answers, option_translator, get_MCMC_data, get_estimated_values
 from predict import load_models, predict_prices
 
 ########## Set Title ##########
@@ -67,7 +67,7 @@ if st.button('Apply'):
 
 ########## Prediction ##########
 if 'df' in st.session_state:
-    st.header("2. Model Predictions")
+    st.header("Model Predictions")
     if st.button("Predict prices"):
         if not st.session_state['df'].empty:
             # Load models
@@ -80,8 +80,15 @@ if 'df' in st.session_state:
             st.markdown(f"<span style='color: white;'>Base Model Predictions:</span> <span style='color: green; font-size: 20px;'>{round(base_predictions[0], 4)}</span>", unsafe_allow_html=True)
             st.markdown(f"<span style='color: white;'>Dynamic Model Predictions:</span> <span style='color: green; font-size: 20px;'>{round(dynamic_predictions[0], 4)}</span>", unsafe_allow_html=True)
             st.markdown(f"<span style='color: white;'>Demand Model Predictions:</span> <span style='color: green; font-size: 20px;'>{round(demand_predictions[0], 4)}</span>", unsafe_allow_html=True)
-            eta = 'this part should be predicted'
-            st.markdown(f"<span style='color: white;'>Estimated Demand:</span> <span style='color: green; font-size: 20px;'>{eta}</span>", unsafe_allow_html=True)
+            
+            eta, a, b = get_estimated_values(MCMC_data=get_MCMC_data(), input_df=st.session_state['df'])
+            # eta = 'this part should be predicted'
+            # This is the temperature format
+            # if eta is float
+            if type(eta) == float:
+                st.markdown(f"<span style='color: white;'>Estimated Demand:</span> <span style='color: green; font-size: 20px;'>{round(eta, 4)}</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"<span style='color: white;'>Estimated Demand:</span> <span style='color: green; font-size: 20px;'>{eta}</span>", unsafe_allow_html=True)
         else:
             st.warning("No data available for predictions. Please select your options.")
         
