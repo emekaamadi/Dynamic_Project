@@ -199,6 +199,25 @@ def option_translator(option_list):
     df['weekday'] = df['weekday'].map(week_dict)
     df['rush_hour'] = df['rush_hour'].map(yn_dict)
     df['is_raining'] = df['is_raining'].map(yn_dict)
-
     return df
+
+def adjust_demand_price(base_price, dynamic_price, demand_price):
+    # find the max and min of the other two prices
+    other_prices = [base_price, dynamic_price]
+    max_other_price = max(other_prices)
+    min_other_price = min(other_prices)
+
+    # if demand price is the max of the three prices
+    if demand_price == max(base_price, dynamic_price, demand_price):
+        # adjust demand price to be 20% less than the max of the other two prices
+        if demand_price > 1.2 * min_other_price:
+            demand_price = 1.2 * min_other_price
+
+    # if demand price is the min of the three prices
+    elif demand_price == min(base_price, dynamic_price, demand_price):
+        # adjust demand price to be 20% more than the min of the other two prices
+        if demand_price < 0.8 * max_other_price:
+            demand_price = 0.8 * max_other_price
+
+    return base_price, dynamic_price, demand_price
 

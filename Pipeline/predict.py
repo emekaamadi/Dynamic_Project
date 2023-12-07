@@ -18,5 +18,8 @@ def predict_prices(new_data, base_model, dynamic_model, demand_model):
     demand_predictions = demand_model.predict(new_data)
     return base_predictions, dynamic_predictions, demand_predictions
 
+def predict_eta(new_data, eta_model=load('Models/demand_model_eta_pipeline.joblib')):
+    eta_predictions = eta_model.predict(new_data)
+    return eta_predictions
 
 
