@@ -2,6 +2,15 @@ import pymc3 as pm
 import theano.tensor as tt
 import pandas as pd
 import numpy as np
+from preprocess import *
+
+def load_MCMC_df(data=pd.read_csv('Data/base_cleaned.csv')):
+    if "Unnamed: 0" in data.columns: 
+        data.drop(columns=["Unnamed: 0"], axis=1, inplace=True)
+    if "date_time" in data.columns: 
+        data = data.set_index('date_time')
+        data = data.sort_index()
+    return data
 
 def estimate_demand_parameters(dataframe, price_col):
     """
@@ -16,9 +25,12 @@ def estimate_demand_parameters(dataframe, price_col):
         # eta에 대한 감마 분포 정의, 평균이 0.4~0.5가 되도록 조정
         eta_shape = 2   # 모양 매개변수
         eta_rate = 5    # 비율 매개변수
+        ### Set the prior for eta to be a Gamma distribution with shape=2 and rate=5
         eta = pm.Gamma('eta', alpha=eta_shape, beta=eta_rate) + 0.25
-        a = pm.Uniform('a', lower=0, upper=100)
-        b = pm.Uniform('b', lower=0, upper=20)
+
+        ### Set the priors for a and b
+        a = pm.Uniform('a', lower=0, upper=70)
+        b = pm.Uniform('b', lower=4, upper=40)
 
         # Convert the price data to a theano tensor
         price_data = tt.as_tensor_variable(dataframe[price_col].values)
@@ -45,9 +57,8 @@ def estimate_demand_parameters(dataframe, price_col):
 
     return dataframe, trace
 
-def save_demand_data(data):
-    data = get_cleaned_data()
 
+def save_demand_data(data=load_MCMC_df()):
     lst_car_type = list(set(data.car_type))
     lst_source = list(set(data.source))
     lst_destination = list(set(data.destination))
@@ -74,6 +85,11 @@ def save_demand_data(data):
 
     # 모든 결과 데이터프레임을 하나로 결합
     combined_df = pd.concat(results_list, ignore_index=True)
-    combined_df.to_csv("Data/demand_est.csv", index=False)
+    combined_df.to_csv("Data/demand_est_test0.csv", index=False)
+
+# if __name__ == "__main__":
+#     df = load_MCMC_df()
+#     sub_eta_df = estimate_demand_parameters(df, 'price')
+#     eta_df = save_demand_data(sub_eta_df)
 
     
