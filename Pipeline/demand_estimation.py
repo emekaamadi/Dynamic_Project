@@ -10,7 +10,9 @@ def load_MCMC_df(data=pd.read_csv('Data/base_cleaned.csv')):
     if "date_time" in data.columns: 
         data = data.set_index('date_time')
         data = data.sort_index()
+        
     return data
+
 
 def estimate_demand_parameters(dataframe, price_col):
     """
@@ -65,25 +67,24 @@ def save_demand_data(data=load_MCMC_df()):
 
     results_list = []
 
-    # 모든 조합에 대해 반복
+    # Iterate through all combinations of car_type, source, and destination
     for car_type in lst_car_type:
         for source in lst_source:
             for destination in lst_destination:
                 # 데이터 필터링
                 filtered_data = data[(data['car_type'] == car_type) & (data['source'] == source) & (data['destination'] == destination)]
 
-                # 필터링된 데이터가 비어있지 않은 경우에만 처리
+                # If the filtered data is not empty, estimate the demand parameters
                 if not filtered_data.empty:
                     try:
-                        # 함수 호출
+                        # Estimate the demand parameters and add them to the dataframe
                         result_df, _ = estimate_demand_parameters(filtered_data, 'price')
-                        # 결과 데이터프레임을 리스트에 추가
                         results_list.append(result_df)
                     except Exception as e:
                         print(f"Error processing combination: CarType={car_type}, Source={source}, Destination={destination}")
                         print(f"Error message: {e}")
 
-    # 모든 결과 데이터프레임을 하나로 결합
+    # Combine all the results into a single dataframe
     combined_df = pd.concat(results_list, ignore_index=True)
     combined_df.to_csv("Data/demand_est_test0.csv", index=False)
 
@@ -91,5 +92,3 @@ def save_demand_data(data=load_MCMC_df()):
 #     df = load_MCMC_df()
 #     sub_eta_df = estimate_demand_parameters(df, 'price')
 #     eta_df = save_demand_data(sub_eta_df)
-
-    
