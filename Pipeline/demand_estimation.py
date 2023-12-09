@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from preprocess import *
 
-def load_MCMC_df(data=pd.read_csv('Data/base_cleaned.csv')):
+def load_MCMC_df(data = get_cleaned_data()):
     if "Unnamed: 0" in data.columns: 
         data.drop(columns=["Unnamed: 0"], axis=1, inplace=True)
     if "date_time" in data.columns: 

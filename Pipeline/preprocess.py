@@ -139,6 +139,7 @@ def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     # Now the new price column will actually be the dynamic price
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
+# add date_time vairble above when demand_est has it finally  
 
 ##### For test by YC #####
 def get_demand_data_with_eta(data=pd.read_csv("Data/demand_est.csv")):

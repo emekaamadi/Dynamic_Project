@@ -1,11 +1,17 @@
 # This file is going to be used for charting and visualizing the data.
 import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 import numpy as np
 import altair as alt
 from predict import *
 from demand_estimation import *
+from joblib import load
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.pipeline import Pipeline
+from preprocess import *
+from train import *
 
 
 def plot_demand_func(df, a=100, b=10):
@@ -96,6 +102,61 @@ def plot_revenue_bar_chart(df, base_price, dynamic_price, demand_price, a=100, b
     
     return fig
 
+def compare_model_predictions(data):
+    # Just to get surge indices IGNORE
+    A = data.drop(['price'], axis=1)
+    b = data['price']
+    X_train_pre, X_valid_pre, y_train_pre, y_valid_pre = train_test_split(A, b, train_size=0.8, test_size=0.2, random_state=0)
+    surge_indices = X_valid_pre['surge_multiplier'].values > 1
+
+
+    # Prepare the data
+    columns = ["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups","price"]
+    data = data[columns]
+
+    X,y, _ = prepare_data(data)
+    
+    # Split the data
+    X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=0)
+
+    # Load the models
+    base_model = load(f'Models/base_model_pipeline.joblib')
+    dynamic_model = load(f'Models/dynamic_model_pipeline.joblib')
+
+    # Filter X_valid and y_valid for surge > 1
+    X_valid_surge = X_valid[surge_indices]
+    y_valid_surge = y_valid.values[surge_indices]
+
+    # Predict using both models
+    base_predictions = base_model.predict(X_valid_surge)
+    dynamic_predictions = dynamic_model.predict(X_valid_surge)
+
+    # Plotting the whole Test Set as a Scatter Plot
+    plt.figure(figsize=(12, 6))
+    
+    plt.scatter(range(len(y_valid_surge)), y_valid_surge, label='Actual Prices', color='blue', marker='o', s=5)
+    plt.scatter(range(len(y_valid_surge)), base_predictions, label='Base Model Predictions', color='green', marker='x', s=5)
+    plt.scatter(range(len(y_valid_surge)), dynamic_predictions, label='Dynamic Model Predictions', color='red', marker='+', s=5)
+    plt.title('Comparison of Actual Prices vs Predictions (Surge > 1)')
+    plt.xlabel('Sample Index')
+    plt.ylabel('Price')
+    plt.legend()
+    plt.savefig('Visuals/plot.png')
+    plt.show()
+
+    #  the first 100 Values of the Test Set for Visual Clarity
+    plt.figure(figsize=(12, 6))
+    plt.plot(y_valid_surge[:100], label='Actual Prices', color='blue', marker='o')
+    plt.plot(base_predictions[:100], label='Base Model Predictions', color='green', marker='x')
+    plt.plot(dynamic_predictions[:100], label='Dynamic Model Predictions', color='red', marker='+')
+    plt.title('Comparison of Actual Prices vs Predictions (Surge > 1) First 100 Values')
+    plt.xlabel('Sample Index')
+    plt.ylabel('Price')
+    plt.legend()
+    plt.savefig('Visuals/plot2.png')
+    plt.show()
+# If we want to call the function 
+#compare_model_predictions(get_cleaned_data())
 
 # def plot_combined_charts(df, base_price, dynamic_price, demand_price, a=100, b=10):
 #     # Calculate expected revenue and demand

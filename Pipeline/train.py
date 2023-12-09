@@ -8,7 +8,8 @@ from joblib import dump
 from joblib import load
 
 def prepare_data(data):
-    X = data.drop('price', axis=1)
+    X = data.drop(['price'], axis=1)
+    # add date_time to previous if you added it to the get functions
     y = data['price']
 
     # Preprocessing for numerical features
