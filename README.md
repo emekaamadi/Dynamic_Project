@@ -26,6 +26,10 @@ The "Dynamic_Project" investigates dynamic pricing in Uber and Lyft, focusing on
 ### Conclusion
 The project exemplifies the use of advanced data analysis and modeling techniques to understand and visualize the complex dynamics of ride-sharing pricing strategies.
 
+<br>
+<br>
+<br>
+
 ## GitHub Repository and Documentation
 The project is documented on GitHub, providing a README file for execution guidance, a requirements.txt for dependencies, and the core codebase. Note: Due to access restrictions, our data is sourced from Kaggle, not directly obtained via Uber and Lyft APIs.
 
@@ -56,6 +60,10 @@ The project is documented on GitHub, providing a README file for execution guida
 
 ### Execution: `run.py`
 - **Process Execution**: Orchestrates the entire pipeline, except for the demand estimation process which uses pre-generated data due to its lengthy duration.
+
+<br>
+<br>
+<br>
 
 ## Environment Setup and Execution Guide
 
