@@ -49,8 +49,7 @@ train_and_save_model(X, y, preprocessor, 'dynamic_model')
 print("Saved Dynamic Model")
 
 # Creation of Demand Data via Demand Estimation takes a few hours to run only uncomment the following lines to get new demand estimation that is currently stored in Data Folder.
-#sub_eta_df = estimate_demand_parameters(merged_df, 'price')
-#eta_df = save_demand_data(sub_eta_df)   
+#eta_df = save_demand_data()   
 
 # Process and save model for demand data 
 demand_data = get_demand_data()
