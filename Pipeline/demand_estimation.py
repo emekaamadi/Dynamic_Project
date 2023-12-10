@@ -84,4 +84,4 @@ def save_demand_data(data=load_MCMC_df()):
 
     # Combine all the results into a single dataframe
     combined_df = pd.concat(results_list, ignore_index=False)
-    combined_df.to_csv("Data/demand_est_new.csv", index=True)
+    combined_df.to_csv("Data/demand_est.csv", index=True)
