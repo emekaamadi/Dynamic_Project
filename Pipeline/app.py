@@ -58,7 +58,6 @@ st.markdown("""
     )
 
 
-
 ########## Select Filters ##########
 st.header("Select Options")
 questions, answers = get_questions_answers()
@@ -82,11 +81,6 @@ if st.button('Apply'):
     df = option_translator(options)
     st.session_state['df'] = df
     st.success('Successfully applied!')
-
-    # # Show the dataframe
-    # st.write("This is for testing purposes. Please ignore this.")
-    # st.dataframe(df)
-
 
 
 ########## Prediction ##########
@@ -129,8 +123,8 @@ if 'df' in st.session_state:
     )
 
     # Sliders for a and b values
-    a = st.slider('Select value for a', min_value=1, max_value=200, value=100)
-    b = st.slider('Select value for b', min_value=0.1, max_value=20.0, value=10.0)
+    a = st.slider('Select value for a', min_value=0.1, max_value=10.0, value=0.5)
+    b = st.slider('Select value for b', min_value=4.0, max_value=50.0, value=40.0)
 
     if st.button("Predict prices"):
         if not st.session_state['df'].empty:
@@ -147,13 +141,9 @@ if 'df' in st.session_state:
             # add the predicted price to the dataframe
             st.session_state['df']['price'] = demand_predictions
 
-            # ### If we don't predict eta
-            # eta, a, b = get_estimated_values(MCMC_data=get_MCMC_data(), input_df=st.session_state['df'])
-
             ### If we predict eta
             eta = predict_eta(st.session_state['df'])
             st.session_state['df']['predicted_eta'] = eta
-
             if type(eta) == float:
                 st.markdown(f"<span style='color: white;'>Estimated Demand:</span> <span style='color: green; font-size: 20px;'>{round(eta[0], 4)}</span>", unsafe_allow_html=True)
             else:
@@ -176,6 +166,5 @@ if 'df' in st.session_state:
             # Show combined chart
             plt_combined = plot_revenue_bar_chart(st.session_state['df'], base_predictions, dynamic_predictions, demand_predictions, a, b)
             st.pyplot(plt_combined)
-            
         else:
             st.warning("No eta predictions available. Please predict prices first.")

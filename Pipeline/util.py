@@ -16,6 +16,7 @@ from train import *
 
 def plot_demand_func(df, a=100, b=10):
     # Set the style
+    a = a * 500
     plt.style.use('fivethirtyeight')
 
     # Calculate the predicted prices and demands
@@ -44,7 +45,7 @@ def plot_demand_func(df, a=100, b=10):
     plt.ylabel('Demand', fontsize=14)
     plt.title('Demand Function', fontweight='bold', fontsize=20)
     plt.legend(fontsize=14)
-
+    
     return plt
 
 
@@ -70,6 +71,7 @@ def calculate_revenue(df, base_price, dynamic_price, demand_price, a=100, b=10):
 
 def plot_revenue_bar_chart(df, base_price, dynamic_price, demand_price, a=100, b=10):
     # Set the style
+    a = a * 500
     plt.style.use('fivethirtyeight')
 
     # Calculate expected revenue
@@ -101,6 +103,7 @@ def plot_revenue_bar_chart(df, base_price, dynamic_price, demand_price, a=100, b
     plt.show()
     
     return fig
+
 
 def compare_model_predictions(data):
     # Just to get surge indices IGNORE
@@ -155,69 +158,6 @@ def compare_model_predictions(data):
     plt.legend()
     plt.savefig('Visuals/plot2.png')
     plt.show()
-# If we want to call the function 
-#compare_model_predictions(get_cleaned_data())
-
-# def plot_combined_charts(df, base_price, dynamic_price, demand_price, a=100, b=10):
-#     # Calculate expected revenue and demand
-#     base_revenue, dynamic_revenue, demand_revenue = calculate_revenue(df, base_price, dynamic_price, demand_price, a, b)
-#     base_demand = a * base_price ** (-df['predicted_eta'].iloc[0]) + b
-#     dynamic_demand = a * dynamic_price ** (-df['predicted_eta'].iloc[0]) + b
-#     demand_demand = a * demand_price ** (-df['predicted_eta'].iloc[0]) + b
-    
-#     # Create data for visualization of prices and expected revenue
-#     strategies = ['Base', 'Dynamic', 'Demand']
-#     prices = [base_price, dynamic_price, demand_price]
-#     demands = [base_demand, dynamic_demand, demand_demand]
-#     revenues = [base_revenue, dynamic_revenue, demand_revenue]
-
-#     # Set the figure size
-#     fig, ax1 = plt.subplots(figsize=(10, 9))
-
-#     # Calculate the max and min for both demand and revenue
-#     all_demands = demands + prices  # Combine demands and prices for primary y-axis scaling
-#     all_revenues = revenues
-#     max_demand = max(all_demands)
-#     max_revenue = max(all_revenues)
-#     min_demand = min(all_demands)
-#     min_revenue = min(all_revenues)
-
-#     # Add padding to max and min for better visualization
-#     demand_padding = (max_demand - min_demand) * 0.1
-#     revenue_padding = (max_revenue - min_revenue) * 0.1
-
-#     # Set y-axis limits for demand
-#     ax1.set_ylim(min_demand - demand_padding, max_demand + demand_padding)
-#     ax1.bar(strategies, demands, color='navy', label='Demand', alpha=0.2, width=0.2)
-#     ax1.set_xlabel('Pricing Strategies')
-#     ax1.set_ylabel('Demand & Price', color='navy')
-#     ax1.tick_params(axis='y', labelcolor='navy')
-
-#     # Scatter plot for prices
-#     ax1.scatter(strategies, prices, color='darkgreen', label='Price', zorder=5)
-#     for i, strategy in enumerate(strategies):
-#         ax1.text(i, prices[i], f'{prices[i]:.2f}', ha='center', va='bottom', color='darkgreen', fontweight='bold')
-
-#     # Set y-axis limits for revenue
-#     ax2 = ax1.twinx()
-#     ax2.set_ylim(min_revenue - revenue_padding, max_revenue + revenue_padding)
-#     ax2.plot(strategies, revenues, color='darkred', label='Revenue', marker='o', linestyle='-', linewidth=2)
-#     ax2.set_ylabel('Revenue', color='darkred')
-#     ax2.tick_params(axis='y', labelcolor='darkred')
-
-#     # Annotate the actual numbers on top of the bars and lines
-#     for i, strategy in enumerate(strategies):
-#         ax1.text(i, demands[i], f'{demands[i]:.2f}', ha='center', va='bottom', color='navy', fontweight='bold')
-#         ax2.text(i, revenues[i], f'{revenues[i]:.2f}', ha='center', va='top', color='darkred', fontweight='bold')
-
-#     # Combine legends from both axes
-#     handles1, labels1 = ax1.get_legend_handles_labels()
-#     handles2, labels2 = ax2.get_legend_handles_labels()
-#     ax1.legend(handles1 + handles2, labels1 + labels2, loc='upper left')
-
-#     plt.title('Combined Chart for Demand, Price, and Revenue')
-#     plt.show()
-#     return fig
 
 
 

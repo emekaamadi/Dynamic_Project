@@ -3,9 +3,9 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeRegressor
-
 from joblib import dump
 from joblib import load
+
 
 def prepare_data(data):
     X = data.drop(['price'], axis=1)
@@ -28,6 +28,7 @@ def prepare_data(data):
 
     return X, y, preprocessor
 
+
 def train_and_save_model(X, y, preprocessor, model_name):
     pipeline = Pipeline(steps=[('preprocessor', preprocessor),
                                ('regressor', DecisionTreeRegressor(random_state=0))])
@@ -39,7 +40,6 @@ def train_and_save_model(X, y, preprocessor, model_name):
     dump(pipeline, f'Models/{model_name}_pipeline.joblib')
 
 
-##### For test by YC #####
 def prepare_data_eta(data):
     X = data.drop('estimated_eta', axis=1)
     y = data['estimated_eta']
@@ -60,7 +60,7 @@ def prepare_data_eta(data):
 
     return X, y, preprocessor
 
-##### For test by YC #####
+
 def train_and_save_model_for_eta(X, y, preprocessor, model_name):
     pipeline = Pipeline(steps=[('preprocessor', preprocessor),
                                ('regressor', DecisionTreeRegressor(random_state=0))])

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def load_and_preprocess_cab_data(filepath):
     """
     Load cab ride data from a CSV file and preprocess it.
@@ -21,6 +22,7 @@ def load_and_preprocess_cab_data(filepath):
         print(f"File not found: {filepath}")
         return None
 
+
 # Function to determine car type
 def determine_car(car):
     car_mapping = {
@@ -33,11 +35,13 @@ def determine_car(car):
     }
     return car_mapping.get(car, "Other")
 
+
 # Function to check if it's rush hour
 def is_rush_hour(time_obj):
     morning_rush = time_obj.hour in range(7, 10)
     evening_rush = time_obj.hour in range(16, 19)
     return int(morning_rush or evening_rush)
+
 
 # Function to load and preprocess weather data
 def load_and_preprocess_weather_data(filepath):
@@ -58,12 +62,14 @@ def load_and_preprocess_weather_data(filepath):
         print(f"File not found: {filepath}")
         return None
 
+
 # Function to group temperature
 def group_temp(temp):
     temp_ranges = [(30, 20), (40, 30), (50, 40), (float('inf'), 50)]
     for upper_bound, group in temp_ranges:
         if temp < upper_bound:
             return group
+
 
 # Function to merge and clean datasets
 def merge_and_clean_data(ride_data, weather_data):
@@ -90,6 +96,7 @@ def merge_and_clean_data(ride_data, weather_data):
 
     return merged_df[final_columns]
 
+
 # Function to get main data 
 def get_cleaned_data():
     """
@@ -103,7 +110,8 @@ def get_cleaned_data():
         return merge_and_clean_data(data_df, weather_df)
     else:
         raise ValueError("Error in loading data.")
-    
+
+
 # Function to get base modeling data
 def get_base_data(data=get_cleaned_data()):
     """
@@ -115,6 +123,7 @@ def get_base_data(data=get_cleaned_data()):
     base_df = df[df["surge_multiplier"] == 1.0]
     return base_df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
+
 # Function to get dynamic modeling data 
 def get_dynamic_data(data=get_cleaned_data()):
     """
@@ -124,7 +133,8 @@ def get_dynamic_data(data=get_cleaned_data()):
     """
     df = data
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
- 
+
+
 def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     """
     Create dataset based off demand estimation calculation.
@@ -139,9 +149,8 @@ def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     # Now the new price column will actually be the dynamic price
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
-# add date_time vairble above when demand_est has it finally  
 
-##### For test by YC #####
+
 def get_demand_data_with_eta(data=pd.read_csv("Data/demand_est.csv")):
     """
     Create dataset based off demand estimation calculation.
@@ -161,6 +170,7 @@ def get_demand_data_with_eta(data=pd.read_csv("Data/demand_est.csv")):
 def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):
     return whole_data[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta", "estimated_a", "estimated_b"]]
 
+
 def get_estimated_values(MCMC_data=get_MCMC_data(), input_df=get_dynamic_data()):
     filters = pd.Series([True] * len(MCMC_data))  
     for col in input_df.columns:
@@ -171,10 +181,12 @@ def get_estimated_values(MCMC_data=get_MCMC_data(), input_df=get_dynamic_data())
     else:
         return filtered.iloc[0]['estimated_eta'], filtered.iloc[0]['estimated_a'], filtered.iloc[0]['estimated_b']
 
+
 def col_item_dict(data=get_dynamic_data()):
     df = data
     unique_dict = {col: df[col].unique().tolist() for col in df.columns}
     return unique_dict
+
 
 def get_service_types():
     car_type_options = {
@@ -183,11 +195,13 @@ def get_service_types():
     }
     return car_type_options
 
+
 def get_questions_answers():
     unique_values = col_item_dict()  
     questions = ['Uber or Lyft?', 'Where are customers coming from?', 'Where are customers going?', 'What type of service?', 'Weekday or Weekend?', 'Is it rush hour?', 'Is it raining?', 'What is the temperature group?']
     answers = [unique_values['cab_type'], unique_values['source'], unique_values['destination'], unique_values['car_type'], ['Weekday', 'Weekend'], ['Yes', 'No'], ['Yes', 'No'], ['20-30 degrees', '30-40 degrees', '40-50 degrees', '50 or more']]
     return questions, answers
+
 
 def option_translator(option_list):
     temp_dict = {'20-30 degrees': 20, '30-40 degrees': 30, '40-50 degrees': 40, '50 or more': 50}
@@ -201,6 +215,7 @@ def option_translator(option_list):
     df['rush_hour'] = df['rush_hour'].map(yn_dict)
     df['is_raining'] = df['is_raining'].map(yn_dict)
     return df
+
 
 def adjust_demand_price(base_price, dynamic_price, demand_price):
     # find the max and min of the other two prices
