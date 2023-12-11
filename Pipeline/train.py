@@ -8,6 +8,8 @@ from joblib import load
 
 
 def prepare_data(data):
+    if "date_time" in data.columns:
+        X = data.drop(['date_time'], axis=1)
     X = data.drop(['price'], axis=1)
     # add date_time to previous if you added it to the get functions
     y = data['price']

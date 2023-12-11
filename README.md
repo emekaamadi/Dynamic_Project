@@ -119,7 +119,7 @@ Before running `run.py`, it's essential to set up the project environment correc
 ### Running the Application
 
 1. **Execute `run.py`**:
-   - With the environment set up and dependencies installed, run the application:
+   - With the environment set up and dependencies installed, navigate to the Pipeline folder and run the application:
      ```bash
      python run.py
      ```
