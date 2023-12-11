@@ -34,23 +34,12 @@ st.markdown("""
     <div class='big-font'>
         🙌  What is <span class='text-green'>dynamic pricing</span>? <br>
                 - Basically, it's when companies adjust their prices based on the demand for their products or services. <br>
-                - For example, if you check the price of a plane ticket at the airport <br>
-                and then look at it again later, you'll see that the price is much higher. <br>
-                Airlines do this to maximize revenue by raising prices <br>
-                when there are fewer seats available <br>
-                and more people want to buy tickets late. <br>
-                Automating price changes with algorithms is called dynamic pricing. <br>
             <br>
         🙌  What is <span class='text-blue'>our team's goal?</span> <br>
                 - Now we're going to explore how rideshare services <br>
                 like Uber and Lyft use dynamic pricing with additional data <br>
-                including weather, weekday/weekend. <br>
-                - Our goal is to explore how basic pricing differs <br>
-                from dynamic pricing and what factors influence this difference. <br>
-                Uber and Lyft adjust their fares when demand is high by applying a value called a "surge multiplier". <br> 
-                We'll also create our dynamic pricing using demand estimation. <br>
-                By analyzing base pricing, dynamic pricing, and demand-based data, <br>
-                we'll be able to see how prices change with demand and how dynamic pricing affects revenue. <br>
+                - By analyzing base pricing, dynamic pricing, and demand-based data, <br>
+                we'll be able to see how prices change with demand and how dynamic pricing affects revenue <br>
         <br>
     </div>
     """, 
@@ -81,6 +70,10 @@ if st.button('Apply'):
     df = option_translator(options)
     st.session_state['df'] = df
     st.success('Successfully applied!')
+    # Set the flag to reset sliders
+    st.session_state['reset_sliders'] = True
+    st.rerun()
+
 
 
 ########## Prediction ##########
@@ -109,22 +102,27 @@ if 'df' in st.session_state:
     </style>
 
     <div class='big-font'>
-        🙌  <span class='text-green'>a</span> : The weights in the demand function. <br>
-                The price elasticity of demand (ETA) is an indication of how much a change in price affects the quantity demanded.<br>
-                The larger the value of A, the larger the change in quantity demanded for a small change in price, <br>
-                indicating that the good is sensitive to price changes. <br>
-        🙌  <span class='text-blue'>b</span> : This is the minimum demand. <br>
-                B is responsible for shifting the demand curve in a vertical direction, <br>
-                indicating that there will always be some amount of demand regardless of price.<br>
+        🙌  <span class='text-green'>a</span> : The weights in the demand elasiticity <br>
+        🙌  <span class='text-blue'>b</span> : This is the minimum demand <br>
         <br>
     </div>
     """, 
     unsafe_allow_html=True
     )
 
-    # Sliders for a and b values
-    a = st.slider('Select value for a', min_value=0.1, max_value=10.0, value=0.5)
-    b = st.slider('Select value for b', min_value=4.0, max_value=50.0, value=40.0)
+    # Initialize or reset the session state for sliders
+    if 'reset_sliders' in st.session_state and st.session_state['reset_sliders']:
+        st.session_state['a_value'] = 0.5
+        st.session_state['b_value'] = 30.0
+        st.session_state['reset_sliders'] = False
+
+    # Sliders for a and b
+    a = st.slider('Select value for a', min_value=0.1, max_value=10.0, value=st.session_state.get('a_value', 0.5))
+    b = st.slider('Select value for b', min_value=4.0, max_value=50.0, value=st.session_state.get('b_value', 30.0))
+
+    # Save the current slider values to session state
+    st.session_state['a_value'] = a
+    st.session_state['b_value'] = b
 
     if st.button("Predict prices"):
         if not st.session_state['df'].empty:
@@ -162,9 +160,26 @@ if 'df' in st.session_state:
             # Show demand function
             plt_demand_func = plot_demand_func(st.session_state['df'], a, b)
             st.pyplot(plt_demand_func)
-            
-            # Show combined chart
+
+            ### Markdown for the equation
+            st.markdown("""
+                    <style>
+                    .big-font {
+                        font-size:24px !important;
+                    }
+                    </style>
+
+                    <div class='big-font'>
+                        🙌  Revenue = Demand * Price <br>
+                        <br>
+                    </div>
+                    """, 
+                    unsafe_allow_html=True
+                    )           
+
+            # Show revenue bar chart
             plt_combined = plot_revenue_bar_chart(st.session_state['df'], base_predictions, dynamic_predictions, demand_predictions, a, b)
             st.pyplot(plt_combined)
+
         else:
             st.warning("No eta predictions available. Please predict prices first.")

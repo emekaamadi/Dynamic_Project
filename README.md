@@ -12,8 +12,8 @@ The "Dynamic_Project" investigates dynamic pricing in Uber and Lyft, focusing on
 - **Insightful Analysis**: Investigates conditions affecting fare differences between base and dynamic pricing.
 
 ### Model Development
-- **Demand Model**: Inspired by economic demand functions, predicts prices using estimated parameters.
-- **Multiple Models**: Develops base, dynamic, and demand models for comprehensive analysis.
+- **Demand Estimation Model**: Inspired by economic demand functions, predicts prices using estimated parameters.
+- **Multiple Models**: Develops base, dynamic, and demand estimation models for comprehensive analysis.
 
 ### Web Application
 - **Interactive Tool**: Built using Streamlit, it enables users to explore and compare different pricing models.
