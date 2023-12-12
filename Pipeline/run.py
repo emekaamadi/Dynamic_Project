@@ -54,7 +54,7 @@ train_and_save_model(X, y, preprocessor, 'demand_model')
 print("Saved Demand Model")  
 
 # Process and save model for eta estimation
-demand_data_eta = get_demand_data_with_eta(data=eta_df)
+demand_data_eta = get_demand_data_with_eta(data=pd.read_csv("demand_est.csv"))
 X, y, preprocessor = prepare_data_eta(demand_data_eta)
 train_and_save_model_for_eta(X, y, preprocessor, 'demand_model_eta')
 print("Saved eta-estimation model")
