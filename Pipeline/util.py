@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
-import altair as alt
 import os
 from scipy.stats import gamma
 from predict import *
