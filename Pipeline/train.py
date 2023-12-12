@@ -8,9 +8,9 @@ from joblib import load
 
 
 def prepare_data(data):
-    if "date_time" in data.columns:
-        X = data.drop(['date_time'], axis=1)
     X = data.drop(['price'], axis=1)
+    if 'date_time' in data.columns.tolist():
+        X = X.drop(['date_time'], axis=1)
     # add date_time to previous if you added it to the get functions
     y = data['price']
 
@@ -43,8 +43,6 @@ def train_and_save_model(X, y, preprocessor, model_name):
 
 
 def prepare_data_eta(data):
-    # if "date_time" in data.columns:
-    #     X = data.drop(['date_time'], axis=1)
     X = data.drop('estimated_eta', axis=1)
     y = data['estimated_eta']
 
