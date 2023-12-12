@@ -37,6 +37,9 @@ Our dataset encompasses ride data collected from 12 different locations in Bosto
 
 The project is thoroughly documented and hosted on a GitHub repository, titled `Dynamic_Project`.
 
+<br>
+<br>
+<br>
 
 ## Pipeline Detailed Description
 
