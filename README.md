@@ -59,7 +59,8 @@ The project exemplifies the use of advanced data analysis and modeling technique
   2. Bar chart representation of the calculated revenue based on these estimates.
 
 ### Execution: `run.py`
-- **Process Execution**: Orchestrates the entire pipeline, except for the demand estimation process which uses pre-generated data due to its lengthy duration.
+- **Process Execution**: Orchestrates the entire pipeline. If the demand estimation CSV file does not exist, it initiates its creation, which can take up to 10 hours. If the file already exists, it uses the pre-generated data, skipping the time-intensive demand estimation process.
+- **Note**: Creating the CSV file for demand estimation is a lengthy process, please be aware of this time commitment.
 
 <br>
 <br>
