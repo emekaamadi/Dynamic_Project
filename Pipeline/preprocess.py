@@ -149,7 +149,9 @@ def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     # Now the new price column will actually be the dynamic price
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
     if "date_time" in df.columns:
-        keep =["cab_type","date_time","source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]
+        # Set date_time as index
+        df.set_index('date_time', inplace=True)
+        keep = ["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]
     else:
         keep = ["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]
     return df[keep]
@@ -168,7 +170,13 @@ def get_demand_data_with_eta(data=pd.read_csv("Data/demand_est.csv")):
     df.rename(columns = {'price': 'original_price'}, inplace= True)
     # Now the new price column will actually be the dynamic price
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
-    return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta"]]
+    if "date_time" in df.columns:
+        # Set date_time as index
+        df.set_index('date_time', inplace=True)
+        keep = ["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta"]
+    else:
+        keep = ["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta"]
+    return df[keep]
 
 
 def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):

@@ -8,9 +8,11 @@ from preprocess import *
 def load_MCMC_df(data = get_cleaned_data()):
     if "Unnamed: 0" in data.columns: 
         data.drop(columns=["Unnamed: 0"], axis=1, inplace=True)
-    if "date_time" in data.columns: 
-        data = data.set_index('date_time')
-        data = data.sort_index()      
+    if "date_time" in data.columns:
+        # Set date_time as index
+        data.set_index('date_time', inplace=True)
+        # Sort by index
+        data.sort_index(inplace=True) 
     return data
 
 
@@ -27,11 +29,11 @@ def estimate_demand_parameters(dataframe, price_col):
         eta_rate = 5
 
         ### Set the prior for eta to be a Gamma distribution with shape=2 and rate=5
-        eta = pm.Gamma('eta', alpha=eta_shape, beta=eta_rate)
+        eta = pm.Gamma('eta', alpha=eta_shape, beta=eta_rate) + 0.25
 
         ### Set the priors for a and b
-        a = pm.Uniform('a', lower=0, upper=10)
-        b = pm.Uniform('b', lower=4, upper=70)
+        a = pm.Uniform('a', lower=0, upper=100)
+        b = pm.Uniform('b', lower=0, upper=20)
 
         # Convert the price data to a theano tensor
         price_data = tt.as_tensor_variable(dataframe[price_col].values)
@@ -78,9 +80,19 @@ def save_demand_data(data=load_MCMC_df()):
                         # Estimate the demand parameters and add them to the dataframe
                         result_df, _ = estimate_demand_parameters(filtered_data, 'price')
                         results_list.append(result_df)
+                    # except Exception as e:
+                    #     print(f"Error processing combination: CarType={car_type}, Source={source}, Destination={destination}")
+                    #     print(f"Error message: {e}")
                     except Exception as e:
                         print(f"Error processing combination: CarType={car_type}, Source={source}, Destination={destination}")
                         print(f"Error message: {e}")
+
+                        # Generate default values for the demand parameters
+                        default_values = {'estimated_eta': 0.4, 'estimated_a': 0.5, 'estimated_b': 30}
+                        default_df = pd.DataFrame(default_values, index=[0])
+                        default_df = pd.concat([filtered_data.iloc[:1].drop(['price'], axis=1), default_df], axis=1)
+                        results_list.append(default_df)
+
 
     # Combine all the results into a single dataframe
     combined_df = pd.concat(results_list, ignore_index=False)

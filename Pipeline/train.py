@@ -43,6 +43,8 @@ def train_and_save_model(X, y, preprocessor, model_name):
 
 
 def prepare_data_eta(data):
+    # if "date_time" in data.columns:
+    #     X = data.drop(['date_time'], axis=1)
     X = data.drop('estimated_eta', axis=1)
     y = data['estimated_eta']
 

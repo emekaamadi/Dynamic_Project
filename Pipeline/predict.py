@@ -13,6 +13,8 @@ def load_models():
     return base_model, dynamic_model, demand_model 
 
 def predict_prices(new_data, base_model, dynamic_model, demand_model):
+    # if 'date_time' in new_data.columns:
+    #     new_data.set_index('date_time', inplace=True)
     base_predictions = base_model.predict(new_data)
     dynamic_predictions = dynamic_model.predict(new_data)
     demand_predictions = demand_model.predict(new_data)
