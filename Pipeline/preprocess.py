@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 
 def load_and_preprocess_cab_data(filepath):
@@ -135,14 +136,22 @@ def get_dynamic_data(data=get_cleaned_data()):
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
 
-def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
+def get_demand_data(eta_df="Data/demand_est.csv"):
     """
     Create dataset based off demand estimation calculation.
     Returns:
         DataFrame: Filtered Demand data.
     """
     # Load in already saved data because it takes hours to do the demand estimation
-    df = data
+    # If Data/demand_est.csv does not exist, then make df = save_demand_data()
+    # if os.path.isfile("Data/demand_est.csv"):
+    #     print("Demand Estimation Data Found!")
+    # else:
+    #     print("No Demand Estimation Data Found!, Generating New Data!")
+    #     eta_df = save_demand_data()
+    #     print("Saved Demand Estimation Data!")
+    df = eta_df
+
     df['estimated_demand'] = df['estimated_a'] * np.exp(-np.abs(df['estimated_eta']) * np.log(df['price'])) + df['estimated_b']
     df['base_price'] = df.groupby(by=['source', 'destination', 'car_type'])['price'].transform('min')
     df.rename(columns = {'price': 'original_price'}, inplace= True)
@@ -157,14 +166,21 @@ def get_demand_data(data=pd.read_csv("Data/demand_est.csv")):
     return df[keep]
 
 
-def get_demand_data_with_eta(data=pd.read_csv("Data/demand_est.csv")):
+def get_demand_data_with_eta(eta_df="Data/demand_est.csv"):
     """
     Create dataset based off demand estimation calculation.
     Returns:
         DataFrame: Filtered Demand data.
     """
     # Load in already saved data because it takes hours to do the demand estimation
-    df = data
+    # if os.path.isfile("Data/demand_est.csv"):
+    #     print("Demand Estimation Data Found!")
+    # else:
+    #     print("No Demand Estimation Data Found!, Generating New Data!")
+    #     eta_df = save_demand_data()
+    #     print("Saved Demand Estimation Data!")
+    df = eta_df
+
     df['estimated_demand'] = df['estimated_a'] * np.exp(-np.abs(df['estimated_eta']) * np.log(df['price'])) + df['estimated_b']
     df['base_price'] = df.groupby(by=['source', 'destination', 'car_type'])['price'].transform('min')
     df.rename(columns = {'price': 'original_price'}, inplace= True)
@@ -179,11 +195,19 @@ def get_demand_data_with_eta(data=pd.read_csv("Data/demand_est.csv")):
     return df[keep]
 
 
-def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):
+def get_MCMC_data(whole_data="Data/demand_est.csv"):
+    # if os.path.isfile("Data/demand_est.csv"):
+    #     print("Demand Estimation Data Found!")
+    # else:
+    #     print("No Demand Estimation Data Found!, Generating New Data!")
+    #     eta_df = save_demand_data()
+    #     print("Saved Demand Estimation Data!")
+    df = whole_data
     return whole_data[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price", "estimated_eta", "estimated_a", "estimated_b"]]
 
 
-def get_estimated_values(MCMC_data=get_MCMC_data(), input_df=get_dynamic_data()):
+def get_estimated_values(MCMC_data, input_df=get_dynamic_data()):
+    MCMC_data = get_MCMC_data()
     filters = pd.Series([True] * len(MCMC_data))  
     for col in input_df.columns:
         filters &= (MCMC_data[col] == input_df.at[0, col]) 
@@ -248,4 +272,106 @@ def adjust_demand_price(base_price, dynamic_price, demand_price):
             demand_price = 0.8 * max_other_price
 
     return base_price, dynamic_price, demand_price
+    
+
+# ### To remove co-dependency on demand_estimation.py, we have to copy the following functions from demand_estimation.py ###
+import pymc3 as pm
+import theano.tensor as tt
+import pandas as pd
+import numpy as np
+
+
+def load_MCMC_df(data = get_cleaned_data()):
+    if "Unnamed: 0" in data.columns: 
+        data.drop(columns=["Unnamed: 0"], axis=1, inplace=True)
+    if "date_time" in data.columns:
+        # Set date_time as index
+        data.set_index('date_time', inplace=True)
+        # Sort by index
+        data.sort_index(inplace=True) 
+    return data
+
+
+def estimate_demand_parameters(dataframe, price_col):
+    """
+    ### Estimates the demand parameters (eta, a, b) using PyMC3 and adds them as new columns in the dataframe.
+    :param dataframe: Pandas DataFrame containing the data
+    :param price_col: Name of the column containing price data
+    :return: DataFrame with new columns for eta, a, b estimates
+    """
+    with pm.Model() as model:
+        # Define priors
+        eta_shape = 2
+        eta_rate = 5
+
+        ### Set the prior for eta to be a Gamma distribution with shape=2 and rate=5
+        eta = pm.Gamma('eta', alpha=eta_shape, beta=eta_rate) + 0.25
+
+        ### Set the priors for a and b
+        a = pm.Uniform('a', lower=0, upper=100)
+        b = pm.Uniform('b', lower=0, upper=20)
+
+        # Convert the price data to a theano tensor
+        price_data = tt.as_tensor_variable(dataframe[price_col].values)
+        surge_multiplier_data = tt.as_tensor_variable(dataframe['surge_multiplier'].values)
+
+        # Define the demand function using pm.math.exp for exponentiation
+        demand = a * pm.math.exp(-tt.abs_(eta) * tt.log(price_data)) + b
+
+        # Assuming Gaussian noise in the observed data
+        observed = pm.Normal('observed', mu=demand, sd=1, observed=dataframe[price_col])
+
+        # Sample from the posterior
+        trace = pm.sample(1000, tune=1000, return_inferencedata=False)
+
+    # Extracting the mean of the posterior distributions
+    eta_mean = np.mean(trace['eta'])
+    a_mean = np.mean(trace['a'])
+    b_mean = np.mean(trace['b'])
+
+    # Adding new columns to the dataframe
+    dataframe['estimated_eta'] = eta_mean
+    dataframe['estimated_a'] = a_mean
+    dataframe['estimated_b'] = b_mean
+
+    return dataframe, trace
+
+
+def save_demand_data(data=load_MCMC_df()):
+    lst_car_type = list(set(data.car_type))
+    lst_source = list(set(data.source))
+    lst_destination = list(set(data.destination))
+    results_list = []
+
+    # Iterate through all combinations of car_type, source, and destination
+    for car_type in lst_car_type:
+        for source in lst_source:
+            for destination in lst_destination:
+                # Filter the data for the current combination
+                filtered_data = data[(data['car_type'] == car_type) & (data['source'] == source) & (data['destination'] == destination)]
+
+                # If the filtered data is not empty, estimate the demand parameters
+                if not filtered_data.empty:
+                    try:
+                        # Estimate the demand parameters and add them to the dataframe
+                        result_df, _ = estimate_demand_parameters(filtered_data, 'price')
+                        results_list.append(result_df)
+                    # except Exception as e:
+                    #     print(f"Error processing combination: CarType={car_type}, Source={source}, Destination={destination}")
+                    #     print(f"Error message: {e}")
+                    except Exception as e:
+                        print(f"Error processing combination: CarType={car_type}, Source={source}, Destination={destination}")
+                        print(f"Error message: {e}")
+
+                        # Generate default values for the demand parameters
+                        default_values = {'estimated_eta': 0.4, 'estimated_a': 0.5, 'estimated_b': 30}
+                        default_df = pd.DataFrame(default_values, index=[0])
+                        default_df = pd.concat([filtered_data.iloc[:1].drop(['price'], axis=1), default_df], axis=1)
+                        results_list.append(default_df)
+
+
+    # Combine all the results into a single dataframe
+    combined_df = pd.concat(results_list, ignore_index=False)
+    combined_df.to_csv("Data/demand_est.csv", index=True)
+
 
