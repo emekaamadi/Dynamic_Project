@@ -1,5 +1,6 @@
 # This file is going to be used for charting and visualizing the data.
 import matplotlib.pyplot as plt
+import seaborn as sns
 import pandas as pd
 import numpy as np
 import altair as alt
@@ -217,6 +218,36 @@ def plot_demand_function(a=10, b=40, eta_fixed=0.4, shape=2, rate=5, filename='d
     plt.savefig(f'Visuals/{filename}.png', format='png')
     plt.close()
 
+def plot_histogram(data, col_input, filename='histogram_plot'):
+    col = 'estimated_' + col_input
+
+    # Set the aesthetic style of the plots
+    sns.set_style('whitegrid')
+
+    # Create a figure
+    plt.figure(figsize=(8, 6))
+
+    # Create histogram using seaborn
+    sns.histplot(data[col], bins=20, color='blue', kde=False)
+
+    # Adding title and labels
+    plt.title(f'Histogram of {col}')
+    plt.xlabel(col)
+    plt.ylabel('Frequency')
+
+    # Save plot to file
+    if not os.path.exists('Visuals'):
+        os.makedirs('Visuals')
+    filename = col_input + '_' + filename
+    plt.savefig(f'Visuals/{filename}.png', format='png')
+
+    # Close the plot to free up memory
+    plt.close()
 
 
+if __name__ == "__main__":
+    data = pd.read_csv('Data/demand_est_ver3.csv')
+    plot_histogram(data, 'eta')
+    plot_histogram(data, 'a')
+    plot_histogram(data, 'b')
 
