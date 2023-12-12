@@ -47,9 +47,6 @@ X, y, preprocessor = prepare_data(dynamic_data)
 train_and_save_model(X, y, preprocessor, 'dynamic_model')
 print("Saved Dynamic Model")
 
-# # Creation of Demand Data via Demand Estimation takes a few hours to run only uncomment the following lines to get new demand estimation that is currently stored in Data Folder. 
-# eta_df = save_demand_data()
-
 # Process and save model for demand data 
 demand_data = get_demand_data(data=eta_df)
 X, y, preprocessor = prepare_data(demand_data)
