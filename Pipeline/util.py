@@ -182,6 +182,7 @@ def plot_gamma_distribution(shape=2, rate=5, filename='gamma_distribution'):
     if not os.path.exists('Visuals'):
         os.makedirs('Visuals')
     plt.savefig(f'Visuals/{filename}.png', format='png')
+    plt.show()
     plt.close()
 
 def plot_demand_function(a=10, b=40, eta_fixed=0.4, shape=2, rate=5, filename='demand_function'):
@@ -218,6 +219,7 @@ def plot_demand_function(a=10, b=40, eta_fixed=0.4, shape=2, rate=5, filename='d
     if not os.path.exists('Visuals'):
         os.makedirs('Visuals')
     plt.savefig(f'Visuals/{filename}.png', format='png')
+    plt.show()
     plt.close()
 
 def plot_histogram(data, col_input, filename='histogram_plot'):
@@ -243,7 +245,7 @@ def plot_histogram(data, col_input, filename='histogram_plot'):
         os.makedirs('Visuals')
     filename = col_input + '_' + filename
     plt.savefig(f'Visuals/{filename}.png', format='png')
-
+    plt.show()
     # Close the plot to free up memory
     plt.close()
 
@@ -253,7 +255,7 @@ if __name__ == "__main__":
     plot_histogram(data, 'eta')
     plot_histogram(data, 'a')
     plot_histogram(data, 'b')
-    compare_model_predictions(get_dynamic_data())
+    compare_model_predictions(get_cleaned_data())
     plot_gamma_distribution()
     plot_demand_function()
 
