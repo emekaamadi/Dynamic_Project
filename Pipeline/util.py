@@ -251,4 +251,6 @@ if __name__ == "__main__":
     plot_histogram(data, 'a')
     plot_histogram(data, 'b')
     compare_model_predictions(get_dynamic_data())
+    plot_gamma_distribution()
+    plot_demand_function()
 
