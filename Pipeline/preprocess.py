@@ -136,7 +136,7 @@ def get_dynamic_data(data=get_cleaned_data()):
     return df[["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]]
 
 
-def get_demand_data(eta_df="Data/demand_est.csv"):
+def get_demand_data(eta_df=pd.read_csv("Data/demand_est.csv")):
     """
     Create dataset based off demand estimation calculation.
     Returns:
@@ -166,7 +166,7 @@ def get_demand_data(eta_df="Data/demand_est.csv"):
     return df[keep]
 
 
-def get_demand_data_with_eta(eta_df="Data/demand_est.csv"):
+def get_demand_data_with_eta(eta_df=pd.read_csv("Data/demand_est.csv")):
     """
     Create dataset based off demand estimation calculation.
     Returns:
@@ -195,7 +195,7 @@ def get_demand_data_with_eta(eta_df="Data/demand_est.csv"):
     return df[keep]
 
 
-def get_MCMC_data(whole_data="Data/demand_est.csv"):
+def get_MCMC_data(whole_data=pd.read_csv("Data/demand_est.csv")):
     # if os.path.isfile("Data/demand_est.csv"):
     #     print("Demand Estimation Data Found!")
     # else:
