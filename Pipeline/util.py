@@ -109,6 +109,7 @@ def plot_revenue_bar_chart(df, base_price, dynamic_price, demand_price, a=100, b
 
 
 def compare_model_predictions(data):
+    # Compare the Base and Dynamic Model price predicictions to the actual price predictions
     # Just to get surge indices IGNORE
     A = data.drop(['price'], axis=1)
     b = data['price']
