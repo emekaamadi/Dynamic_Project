@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import altair as alt
+import os
+from scipy.stats import gamma
 from predict import *
 from demand_estimation import *
 from joblib import load
@@ -159,9 +161,61 @@ def compare_model_predictions(data):
     plt.savefig('Visuals/plot2.png')
     plt.show()
 
+def plot_gamma_distribution(shape=2, rate=5, filename='gamma_distribution'):
+    # Generate values
+    x = np.linspace(0, 1.5, 1000)
+    y = gamma.pdf(x, shape, scale=1/rate)
 
+    # Plot
+    plt.style.use('fivethirtyeight')
+    plt.figure(figsize=(10, 6))
+    plt.plot(x, y, label=f'Shape={shape}, Rate={rate}')
+    plt.title('Gamma Distribution')
+    plt.xlabel('Value')
+    plt.ylabel('Probability Density')
+    plt.legend()
+    plt.grid(True)
 
+    # Save plot to file
+    if not os.path.exists('Visuals'):
+        os.makedirs('Visuals')
+    plt.savefig(f'Visuals/{filename}.png', format='png')
+    plt.close()
 
+def plot_demand_function(a=10, b=40, eta_fixed=0.4, shape=2, rate=5, filename='demand_function'):
+    # Originally it should be done with trace object from pymc3
+    # But the restriction of the project is to use only numpy and scipy
+    # Price range
+    price_range = np.linspace(2.5, 40, 100)
+
+    # Gamma distribution for eta
+    eta_random = gamma.rvs(shape, scale=1/rate, size=300)
+
+    # Plotting the demand curves
+    plt.style.use('fivethirtyeight')
+    plt.figure(figsize=(8,6))
+
+    # 200 random eta values to create grey lines with transparency
+    for eta in eta_random:
+        demand = a * price_range ** (-eta) + b
+        plt.plot(price_range, demand, color='grey', alpha=0.1)
+
+    # Fixed eta value to create the blue line
+    demand_fixed = a * price_range ** (-eta_fixed) + b
+    plt.plot(price_range, demand_fixed, label='Estimated Demand Function', color='blue', linewidth=2)
+
+    # Finalizing the plot
+    plt.title('Demand Function Estimations')
+    plt.xlabel('Price')
+    plt.ylabel('Demand')
+    plt.legend()
+    plt.grid(True)
+
+    # Save plot to file
+    if not os.path.exists('Visuals'):
+        os.makedirs('Visuals')
+    plt.savefig(f'Visuals/{filename}.png', format='png')
+    plt.close()
 
 
 
