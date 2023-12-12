@@ -164,6 +164,7 @@ def compare_model_predictions(data):
     plt.show()
 
 def plot_gamma_distribution(shape=2, rate=5, filename='gamma_distribution'):
+    # Show the gamma distribution for different shape and rate parameters
     # Generate values
     x = np.linspace(0, 1.5, 1000)
     y = gamma.pdf(x, shape, scale=1/rate)
@@ -185,6 +186,7 @@ def plot_gamma_distribution(shape=2, rate=5, filename='gamma_distribution'):
     plt.close()
 
 def plot_demand_function(a=10, b=40, eta_fixed=0.4, shape=2, rate=5, filename='demand_function'):
+    # Plot the demand function with a eta value
     # Originally it should be done with trace object from pymc3
     # But the restriction of the project is to use only numpy and scipy
     # Price range
@@ -220,6 +222,7 @@ def plot_demand_function(a=10, b=40, eta_fixed=0.4, shape=2, rate=5, filename='d
     plt.close()
 
 def plot_histogram(data, col_input, filename='histogram_plot'):
+    # Plot histogram of specified column to estimate the distribution
     col = 'estimated_' + col_input
 
     # Set the aesthetic style of the plots
