@@ -104,8 +104,8 @@ def get_cleaned_data():
     Returns:
         DataFrame: The cleaned data.
     """
-    data_df = load_and_preprocess_cab_data("../cab_rides.csv")
-    weather_df = load_and_preprocess_weather_data("../weather.csv")
+    data_df = load_and_preprocess_cab_data("Data/cab_rides.csv")
+    weather_df = load_and_preprocess_weather_data("Data/weather.csv")
     if data_df is not None and weather_df is not None:
         return merge_and_clean_data(data_df, weather_df)
     else:

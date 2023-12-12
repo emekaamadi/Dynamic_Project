@@ -26,8 +26,8 @@ from train import *
 
 print("Completed Initialization!")
 # Load in Data Sets and Merge/Clean
-data_df = load_and_preprocess_cab_data("../cab_rides.csv")
-weather_df = load_and_preprocess_weather_data("../weather.csv")
+data_df = load_and_preprocess_cab_data("Data/cab_rides.csv")
+weather_df = load_and_preprocess_weather_data("Data/weather.csv")
 print("Loading and Cleaning the Data!")
 
 if data_df is not None and weather_df is not None:
