@@ -5,12 +5,9 @@
 ### 1. Overview
 The "Dynamic_Project" investigates dynamic pricing in Uber and Lyft, focusing on how fares differ between standard and dynamically priced rides. It encompasses data analysis, model development, and an interactive web application for visualization and comparison of pricing strategies.
 
-## Data Access Statement
+### Data Access Statement
 Accessing the APIs of Uber and Lyft requires authorization, which we were unable to obtain. Instead, our data was sourced from [Kaggle](https://www.kaggle.com/datasets/ravi72munde/uber-lyft-cab-prices), where datasets were originally gathered through the Uber and Lyft APIs. This data represents what the price and surge data of a ride would be if a ride was taken at that time. It's important to note that Uber and Lyft actual ride data is not publicly available.
-
-<br>
-<br>
-<br>
+<br> 
 
 ### 2. Details
 
