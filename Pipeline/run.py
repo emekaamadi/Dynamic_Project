@@ -1,5 +1,18 @@
 #Run this file to run the entire pipeline
 
+# Check if Data/demand_est.csv exists
+# If not, run demand_estimation.py to create it
+import os
+import subprocess
+if not os.path.exists("Data/demand_est.csv"):
+    print("Data/demand_est.csv does not exist, generating it now")
+    subprocess.run(["python", "demand_estimation.py"])
+    eta_df = pd.read_csv("Data/demand_est.csv")
+else:
+    print("Data/demand_est.csv already exists")
+
+
+# Import packages
 import pandas as pd
 import numpy as np
 import subprocess
@@ -7,6 +20,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from preprocess import *
 from train import *
+from demand_estimation import *
+
 
 print("Completed Initialization!")
 # Load in Data Sets and Merge/Clean
@@ -32,17 +47,17 @@ X, y, preprocessor = prepare_data(dynamic_data)
 train_and_save_model(X, y, preprocessor, 'dynamic_model')
 print("Saved Dynamic Model")
 
-# Creation of Demand Data via Demand Estimation takes a few hours to run only uncomment the following lines to get new demand estimation that is currently stored in Data Folder.
-#eta_df = save_demand_data()   
+# # Creation of Demand Data via Demand Estimation takes a few hours to run only uncomment the following lines to get new demand estimation that is currently stored in Data Folder. 
+# eta_df = save_demand_data()
 
 # Process and save model for demand data 
-demand_data = get_demand_data()
+demand_data = get_demand_data(data=eta_df)
 X, y, preprocessor = prepare_data(demand_data)
 train_and_save_model(X, y, preprocessor, 'demand_model')
 print("Saved Demand Model")  
 
 # Process and save model for eta estimation
-demand_data_eta = get_demand_data_with_eta()
+demand_data_eta = get_demand_data_with_eta(data=eta_df)
 X, y, preprocessor = prepare_data_eta(demand_data_eta)
 train_and_save_model_for_eta(X, y, preprocessor, 'demand_model_eta')
 print("Saved eta-estimation model")
