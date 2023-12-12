@@ -158,9 +158,8 @@ def get_demand_data(eta_df=pd.read_csv("Data/demand_est.csv")):
     # Now the new price column will actually be the dynamic price
     df['price'] = df['base_price'] * (1 + df['estimated_eta'] * df['estimated_demand'])
     if "date_time" in df.columns:
-        # Set date_time as index
-        df.set_index('date_time', inplace=True)
-        keep = ["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]
+
+        keep = ["cab_type", "source", "destination","date_time", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]
     else:
         keep = ["cab_type", "source", "destination", "car_type", "weekday", "rush_hour", "is_raining", "temp_groups", "price"]
     return df[keep]
