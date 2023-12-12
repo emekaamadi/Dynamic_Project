@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
-import altair as alt
 import os
 from scipy.stats import gamma
 from predict import *
@@ -109,7 +108,6 @@ def plot_revenue_bar_chart(df, base_price, dynamic_price, demand_price, a=100, b
 
 
 def compare_model_predictions(data):
-    # Compare the Base and Dynamic Model price predicictions to the actual price predictions
     # Just to get surge indices IGNORE
     A = data.drop(['price'], axis=1)
     b = data['price']
@@ -148,7 +146,7 @@ def compare_model_predictions(data):
     plt.xlabel('Sample Index')
     plt.ylabel('Price')
     plt.legend()
-    plt.savefig('Visuals/plot.png')
+    plt.savefig('Visuals/predictions_all.png')
     plt.show()
 
     #  the first 100 Values of the Test Set for Visual Clarity
@@ -160,8 +158,9 @@ def compare_model_predictions(data):
     plt.xlabel('Sample Index')
     plt.ylabel('Price')
     plt.legend()
-    plt.savefig('Visuals/plot2.png')
+    plt.savefig('Visuals/predictions_last100.png')
     plt.show()
+
 
 def plot_gamma_distribution(shape=2, rate=5, filename='gamma_distribution'):
     # Show the gamma distribution for different shape and rate parameters

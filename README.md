@@ -132,28 +132,6 @@ Following these steps will ensure that your environment is correctly configured 
 
 ## Generating and Saving Plots
 
-This project includes two Python functions in `util.py` for generating and saving plots:
-
-1. **Gamma Distribution Plot** (`plot_gamma_distribution`):
-   - Generates a plot of the Gamma distribution.
-   - Optional parameters: `shape`, `rate`, `filename`. 
-     - Defaults: `shape=2`, `rate=5`, `filename='gamma_distribution'`.
-   - Saves the plot as a PNG file in the `Visuals` directory.
-   - **Usage**:
-     ```python
-     from util import plot_gamma_distribution
-     plot_gamma_distribution(shape=2, rate=5, filename='my_gamma_plot')
-     ```
-
-2. **Demand Function Plot** (`plot_demand_function`):
-   - Generates a plot of the demand function using both fixed and random eta values.
-   - Optional parameters: `a`, `b`, `eta_fixed`, `shape`, `rate`, `filename`.
-     - Defaults: `a=10`, `b=40`, `eta_fixed=0.4`, `shape=2`, `rate=5`, `filename='demand_function'`.
-   - Saves the plot as a PNG file in the `Visuals` directory.
-   - **Usage**:
-     ```python
-     from util import plot_demand_function
-     plot_demand_function(a=10, b=40, eta_fixed=0.4, shape=2, rate=5, filename='my_demand_function_plot')
-     ```
-
+This project includes a Python file called `util.py` for generating and saving plots. Plots are saved in the Visuals folder.
+Some of the plots are listed below.
 Ensure you have the required dependencies (`numpy`, `matplotlib`, `scipy`) installed to generate and view these plots. Call the functions with your desired parameters.
