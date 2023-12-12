@@ -13,3 +13,6 @@ Modeling/temp_analysis.ipynb
 Modeling/temp_analysis2.ipynb
 Modeling/temp_analysis3.ipynb
 Pipeline/Data/demand_est_last.csv
+Dynamic_Project/base_cleaned.csv
+Dynamic_Project/cab_rides.csv
+Dynamic_Project/weather.csv
