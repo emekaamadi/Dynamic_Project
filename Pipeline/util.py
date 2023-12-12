@@ -246,8 +246,9 @@ def plot_histogram(data, col_input, filename='histogram_plot'):
 
 
 if __name__ == "__main__":
-    data = pd.read_csv('Data/demand_est_ver3.csv')
+    data = pd.read_csv('Data/demand_est.csv')
     plot_histogram(data, 'eta')
     plot_histogram(data, 'a')
     plot_histogram(data, 'b')
+    compare_model_predictions(get_dynamic_data())
 
